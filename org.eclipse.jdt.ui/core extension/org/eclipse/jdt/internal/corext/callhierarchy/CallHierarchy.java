@@ -37,10 +37,6 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.util.StringMatcher;
 
 public class CallHierarchy {
-    private static final String PREF_USE_IMPLEMENTORS= "PREF_USE_IMPLEMENTORS"; //$NON-NLS-1$
-    private static final String PREF_USE_FILTERS = "PREF_USE_FILTERS"; //$NON-NLS-1$
-    private static final String PREF_FILTERS_LIST = "PREF_FILTERS_LIST"; //$NON-NLS-1$
-    private static final String PREF_FILTER_TESTCODE= "PREF_FILTER_TESTCODE"; //$NON-NLS-1$
 
     private static CallHierarchy fgInstance;
     private CallHierarchyCore fgCallHierarchyCore;
@@ -60,25 +56,25 @@ public class CallHierarchy {
     public boolean isSearchUsingImplementorsEnabled() {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
 
-        return settings.getBoolean(PREF_USE_IMPLEMENTORS);
+        return settings.getBoolean(CallHierarchyCore.PREF_USE_IMPLEMENTORS);
     }
 
     public static void setSearchUsingImplementorsEnabled(boolean enabled) {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
 
-        settings.setValue(PREF_USE_IMPLEMENTORS, enabled);
+        settings.setValue(CallHierarchyCore.PREF_USE_IMPLEMENTORS, enabled);
     }
 
     public boolean isFilterTestCode() {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
 
-        return settings.getBoolean(PREF_FILTER_TESTCODE);
+        return settings.getBoolean(CallHierarchyCore.PREF_FILTER_TESTCODE);
     }
 
     public void setFilterTestCode(boolean enabled) {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
 
-        settings.setValue(PREF_FILTER_TESTCODE, enabled);
+        settings.setValue(CallHierarchyCore.PREF_FILTER_TESTCODE, enabled);
     }
 
 
@@ -132,12 +128,12 @@ public class CallHierarchy {
 
     public boolean isFilterEnabled() {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
-        return settings.getBoolean(PREF_USE_FILTERS);
+        return settings.getBoolean(CallHierarchyCore.PREF_USE_FILTERS);
     }
 
     public void setFilterEnabled(boolean filterEnabled) {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
-        settings.setValue(PREF_USE_FILTERS, filterEnabled);
+        settings.setValue(CallHierarchyCore.PREF_USE_FILTERS, filterEnabled);
     }
 
     /**
@@ -147,14 +143,14 @@ public class CallHierarchy {
     public String getFilters() {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
 
-        return settings.getString(PREF_FILTERS_LIST);
+        return settings.getString(CallHierarchyCore.PREF_FILTERS_LIST);
     }
 
     public void setFilters(String filters) {
         fgCallHierarchyCore.resetFilters();
 
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
-        settings.setValue(PREF_FILTERS_LIST, filters);
+        settings.setValue(CallHierarchyCore.PREF_FILTERS_LIST, filters);
     }
 
     /**

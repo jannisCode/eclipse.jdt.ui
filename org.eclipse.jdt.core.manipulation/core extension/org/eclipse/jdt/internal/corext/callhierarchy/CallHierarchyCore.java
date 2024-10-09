@@ -46,10 +46,10 @@ import org.eclipse.jdt.internal.ui.util.StringMatcher;
 
 public class CallHierarchyCore {
 
-    private static final String PREF_USE_IMPLEMENTORS= "PREF_USE_IMPLEMENTORS"; //$NON-NLS-1$
-    private static final String PREF_USE_FILTERS= "PREF_USE_FILTERS"; //$NON-NLS-1$
-    private static final String PREF_FILTERS_LIST= "PREF_FILTERS_LIST"; //$NON-NLS-1$
-    private static final String PREF_FILTER_TESTCODE= "PREF_FILTER_TESTCODE"; //$NON-NLS-1$
+    public static final String PREF_USE_IMPLEMENTORS= "PREF_USE_IMPLEMENTORS"; //$NON-NLS-1$
+    public static final String PREF_USE_FILTERS= "PREF_USE_FILTERS"; //$NON-NLS-1$
+    public static final String PREF_FILTERS_LIST= "PREF_FILTERS_LIST"; //$NON-NLS-1$
+    public static final String PREF_FILTER_TESTCODE= "PREF_FILTER_TESTCODE"; //$NON-NLS-1$
 
     private String defaultIgnoreFilters= "java.*,javax.*"; //$NON-NLS-1$
 
