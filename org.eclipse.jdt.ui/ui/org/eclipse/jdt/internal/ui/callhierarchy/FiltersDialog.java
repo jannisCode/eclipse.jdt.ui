@@ -31,6 +31,7 @@ import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.ui.PlatformUI;
 
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
+import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchyCore;
 
 import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
@@ -43,7 +44,7 @@ class FiltersDialog extends StatusDialog {
     private Button fShowAll;
     private Button fHideTest;
     private Button fShowTest;
-
+    private Button[] buttons = {fShowAll, fHideTest, fShowTest};
     protected FiltersDialog(Shell parentShell) {
         super(parentShell);
     }
@@ -118,6 +119,10 @@ class FiltersDialog extends StatusDialog {
 		layout.numColumns= 1;
 		radioGroup.setLayout(layout);
 
+		for (Button button : buttons) {
+			button = new Button(radioGroup, SWT.RADIO);
+		}
+
 		fShowAll= new Button(radioGroup, SWT.RADIO);
 		fShowAll.setText(CallHierarchyMessages.FiltersDialog_ShowAllCode);
 
@@ -191,9 +196,18 @@ class FiltersDialog extends StatusDialog {
 		CallHierarchy.getDefault().setFilters(fNames.getText());
 		CallHierarchy.getDefault().setFilterEnabled(fFilterOnNames.getSelection());
 
-		CallHierarchy.getDefault().setShowAll(fShowAll.getSelection());
-		CallHierarchy.getDefault().setHideTestCode(fHideTest.getSelection());
-		CallHierarchy.getDefault().setShowTestCode(fShowTest.getSelection());
+//		CallHierarchy.getDefault().setShowAll(fShowAll.getSelection());
+//		CallHierarchy.getDefault().setHideTestCode(fHideTest.getSelection());
+//		CallHierarchy.getDefault().setShowTestCode(fShowTest.getSelection());
+		String activeFilter;
+		for (Button button : buttons) {
+			if(button.getSelection()) {
+				activeFilter = getString(button);
+			}
+		}
+		activeFilter = ""; //$NON-NLS-1$
+
+		CallHierarchy.getDefault().setActiveFilter(activeFilter);
 	}
 
 	/**
@@ -205,8 +219,17 @@ class FiltersDialog extends StatusDialog {
 		fFilterOnNames.setSelection(CallHierarchy.getDefault().isFilterEnabled());
 
 		setSelection();
-		
+
 		updateEnabledState();
+	}
+	private String getString(Button B) {
+		if(B == fShowAll) {
+			return CallHierarchyCore.PREF_SHOW_ALL_CODE;
+		} else if (B == fHideTest) {
+			return CallHierarchyCore.PREF_HIDE_TEST_CODE;
+		} else {
+			return CallHierarchyCore.PREF_SHOW_TEST_CODE_ONLY;
+		}
 	}
 
 

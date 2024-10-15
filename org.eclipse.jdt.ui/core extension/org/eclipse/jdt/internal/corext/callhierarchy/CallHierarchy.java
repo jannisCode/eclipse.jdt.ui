@@ -75,6 +75,18 @@ public class CallHierarchy {
         settings.setValue(PREF_SHOW_TEST_CODE_ONLY, value);
     }
 
+    public void setActiveFilter (String string) {
+        IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
+        for (String s : CallHierarchyCore.PREF_FILTERS) {
+			if(s == string) {
+				settings.setValue(s, true);
+			} else {
+				settings.setValue(s, false);
+			}
+		}
+
+    }
+
     public boolean isSearchUsingImplementorsEnabled() {
         IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
         return settings.getBoolean(PREF_USE_IMPLEMENTORS);
@@ -148,6 +160,7 @@ public class CallHierarchy {
     	IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();
         return settings.getBoolean(PREF_HIDE_TEST_CODE);
     }
+
 
     public boolean isShowTestCode() {
     	IPreferenceStore settings = JavaPlugin.getDefault().getPreferenceStore();

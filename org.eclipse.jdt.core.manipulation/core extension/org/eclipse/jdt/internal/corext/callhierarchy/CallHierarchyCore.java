@@ -49,6 +49,7 @@ public class CallHierarchyCore {
 	public static final String PREF_SHOW_ALL_CODE = "PREF_SHOW_ALL_CODE";	//$NON-NLS-1$
 	public static final String PREF_HIDE_TEST_CODE = "PREF_HIDE_TEST_CODE";	//$NON-NLS-1$
 	public static final String PREF_SHOW_TEST_CODE_ONLY = "PREF_SHOW_TEST_CODE_ONLY";	//$NON-NLS-1$
+	public static final String[] PREF_FILTERS = {PREF_SHOW_ALL_CODE, PREF_HIDE_TEST_CODE, PREF_SHOW_TEST_CODE_ONLY};
 
     public static final String PREF_USE_IMPLEMENTORS= "PREF_USE_IMPLEMENTORS"; //$NON-NLS-1$
     public static final String PREF_USE_FILTERS= "PREF_USE_FILTERS"; //$NON-NLS-1$
@@ -72,6 +73,7 @@ public class CallHierarchyCore {
     }
 
     public boolean isShowTestCode() {
+
         return Boolean.parseBoolean(JavaManipulation.getPreference(PREF_SHOW_TEST_CODE_ONLY, null));
     }
 
@@ -81,6 +83,13 @@ public class CallHierarchyCore {
 
 	public boolean isHideTestCode() {
 		return Boolean.parseBoolean(JavaManipulation.getPreference(PREF_HIDE_TEST_CODE, null));
+	}
+	public String getActiveFilter() {
+		for (String string : PREF_FILTERS) { //must be one of the threee
+			if(Boolean.parseBoolean(JavaManipulation.getPreference(string, null))) {
+				return string;
+			}
+		} return null;
 	}
 
     public Collection<IJavaElement> getImplementingMethods(IMethod method) {
@@ -328,4 +337,5 @@ public class CallHierarchyCore {
 
         return true;
     }
+
 }
