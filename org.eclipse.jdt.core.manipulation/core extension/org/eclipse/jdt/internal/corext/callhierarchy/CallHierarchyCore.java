@@ -328,4 +328,13 @@ public class CallHierarchyCore {
 
         return true;
     }
+    public String getCurrentSelection() {
+    	if(isShowAll()) {
+    		return PREF_SHOW_ALL_CODE;
+    	} else if(isHideTestCode()) {
+    		return PREF_HIDE_TEST_CODE;
+    	} else {
+			return PREF_SHOW_TEST_CODE_ONLY;
+		}
+    }
 }

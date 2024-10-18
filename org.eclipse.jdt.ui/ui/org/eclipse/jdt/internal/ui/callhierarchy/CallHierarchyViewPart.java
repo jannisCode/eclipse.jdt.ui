@@ -98,6 +98,7 @@ import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
+import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchyCore;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallLocation;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.jdt.internal.corext.callhierarchy.RealCallers;
@@ -200,6 +201,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     static final int VIEW_ORIENTATION_AUTOMATIC = 3;
     static final int CALL_MODE_CALLERS = 0;
     static final int CALL_MODE_CALLEES = 1;
+
     static final String GROUP_SEARCH_SCOPE = "MENU_SEARCH_SCOPE"; //$NON-NLS-1$
 	static final String ID_CALL_HIERARCHY = "org.eclipse.jdt.callhierarchy.view"; //$NON-NLS-1$
 
@@ -224,6 +226,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
     private SearchScopeActionGroup fSearchScopeActions;
     private ToggleOrientationAction[] fToggleOrientationActions;
     private ToggleCallModeAction[] fToggleCallModeActions;
+    private ToggleAction[] fToggleFilterActions;
     private SelectFieldModeAction[] fToggleFieldModeActions;
     private CallHierarchyFiltersActionGroup fFiltersActionGroup;
     private HistoryDropDownAction fHistoryDropDownAction;
@@ -343,6 +346,11 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
 			restoreSplitterRatio();
         }
     }
+    private void updateFilterState() {
+    	for (ToggleAction action : fToggleFilterActions) {
+			action.update();
+		}
+    }
 
 	private void updateCheckedState() {
 		for (ToggleOrientationAction toaction : fToggleOrientationActions) {
@@ -365,6 +373,36 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
 
             updateView();
         }
+    }
+
+    void setFilterMode(String mode) {
+    	if(mode == CallHierarchyCore.getDefault().getCurrentSelection()) {
+    		return;
+    	}
+
+    	switch(mode) {
+    		case CallHierarchyCore.PREF_SHOW_ALL_CODE:
+    			CallHierarchy.getDefault().setShowAll(true);
+    			CallHierarchy.getDefault().setHideTestCode(false);
+    			CallHierarchy.getDefault().setShowTestCode(false);
+
+    			break;
+
+    		case CallHierarchyCore.PREF_HIDE_TEST_CODE:
+    			CallHierarchy.getDefault().setShowAll(false);
+    			CallHierarchy.getDefault().setHideTestCode(true);
+    			CallHierarchy.getDefault().setShowTestCode(false);
+    			break;
+
+    		case CallHierarchyCore.PREF_SHOW_TEST_CODE_ONLY:
+    			CallHierarchy.getDefault().setShowAll(false);
+    			CallHierarchy.getDefault().setHideTestCode(false);
+    			CallHierarchy.getDefault().setShowTestCode(true);
+    			break;
+    	}
+//    	CallHierarchy.getDefault().
+    	updateView();
+    	refresh();
     }
 
 	/**
@@ -1017,7 +1055,9 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
         IToolBarManager toolBar = actionBars.getToolBarManager();
 
         fActionGroups.fillActionBars(actionBars);
-
+        for (ToggleAction action : fToggleFilterActions) {
+        	toolBar.add(action);
+		}
         toolBar.add(fRefreshViewAction);
         toolBar.add(fCancelSearchAction);
 		for (ToggleCallModeAction fToggleCallModeAction : fToggleCallModeActions) {
@@ -1026,6 +1066,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
         toolBar.add(fHistoryDropDownAction);
         toolBar.add(fPinViewAction);
         toolBar.add(fFiltersAction);
+
     }
 
     private void makeActions() {
@@ -1063,7 +1104,13 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
                 new ToggleCallModeAction(this, CALL_MODE_CALLERS),
                 new ToggleCallModeAction(this, CALL_MODE_CALLEES)
             };
-        fToggleFieldModeActions = new SelectFieldModeAction[] {
+        fToggleFilterActions = new ToggleAction[] {
+
+        		new ToggleAction(this, CallHierarchyCore.PREF_SHOW_ALL_CODE),
+        		new ToggleAction(this, CallHierarchyCore.PREF_HIDE_TEST_CODE),
+        		new ToggleAction(this, CallHierarchyCore.PREF_SHOW_TEST_CODE_ONLY)
+        };
+         fToggleFieldModeActions = new SelectFieldModeAction[] {
                 new SelectFieldModeAction(this, IJavaSearchConstants.REFERENCES),
                 new SelectFieldModeAction(this, IJavaSearchConstants.READ_ACCESSES),
                 new SelectFieldModeAction(this, IJavaSearchConstants.WRITE_ACCESSES)
@@ -1110,6 +1157,7 @@ public class CallHierarchyViewPart extends ViewPart implements ICallHierarchyVie
 
 	private void updateView() {
 		if (fInputElements != null) {
+			updateFilterState();
 			showPage(PAGE_VIEWER);
 
 			int includeMask= getIncludeMask();

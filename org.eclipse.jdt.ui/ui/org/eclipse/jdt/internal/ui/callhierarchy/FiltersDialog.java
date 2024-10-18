@@ -205,7 +205,7 @@ class FiltersDialog extends StatusDialog {
 		fFilterOnNames.setSelection(CallHierarchy.getDefault().isFilterEnabled());
 
 		setSelection();
-		
+
 		updateEnabledState();
 	}
 
