@@ -34,7 +34,6 @@ import org.eclipse.jdt.internal.ui.JavaPluginImages;
 
 class FilterDropDownAction extends Action implements IMenuCreator {
 
-    public static final int RESULTS_IN_DROP_DOWN = 10;
     private CallHierarchyViewPart fView;
     private Menu fMenu;
 
