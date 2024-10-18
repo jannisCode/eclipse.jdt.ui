@@ -16,53 +16,40 @@
  *******************************************************************************/
 package org.eclipse.jdt.internal.ui.callhierarchy;
 
-import java.util.Arrays;
-
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
-
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jface.window.Window;
 
 import org.eclipse.jdt.core.IMember;
 
-import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
+import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchyCore;
+
 import org.eclipse.jdt.internal.ui.JavaPluginImages;
 
 
-class HistoryDropDownAction extends Action implements IMenuCreator {
-
-	private static class ClearHistoryAction extends Action {
-
-		/**
-		 * Creates a clear history action.
-		 *
-		 * @param view the Call Hierarchy view part
-		 */
-		public ClearHistoryAction(CallHierarchyViewPart view) {
-			super(CallHierarchyMessages.HistoryDropDownAction_clearhistory_label);
-		}
-
-		@Override
-		public void run() {
-			CallHierarchyUI.getDefault().clearHistory();
-		}
-	}
+class FilterDropDownAction extends Action implements IMenuCreator {
 
     public static final int RESULTS_IN_DROP_DOWN = 10;
     private CallHierarchyViewPart fView;
     private Menu fMenu;
 
-    public HistoryDropDownAction(CallHierarchyViewPart view) {
+    public FilterDropDownAction(CallHierarchyViewPart view) {
         fView = view;
         fMenu = null;
         setToolTipText(CallHierarchyMessages.HistoryDropDownAction_tooltip);
-        JavaPluginImages.setLocalImageDescriptors(this, "history_list.png"); //$NON-NLS-1$
+        JavaPluginImages.setLocalImageDescriptors(this, CallHierarchyMessages.ShowFilterDialogAction_text);
+		setImageDescriptor(JavaPluginImages.DESC_ELCL_FILTER);
 
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.CALL_HIERARCHY_HISTORY_DROP_DOWN_ACTION);
+		setText(CallHierarchyMessages.ShowFilterDialogAction_text);
+		setImageDescriptor(JavaPluginImages.DESC_ELCL_FILTER);
+		setDisabledImageDescriptor(JavaPluginImages.DESC_DLCL_FILTER);
+
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.CALL_HIERARCHY_HISTORY_DROP_DOWN_ACTION);
 
         setMenuCreator(this);
     }
@@ -78,8 +65,8 @@ class HistoryDropDownAction extends Action implements IMenuCreator {
             fMenu.dispose();
         }
         fMenu= new Menu(parent);
-        addActionToMenu(fMenu, null);
-
+        IMember[][] elements= fView.getHistoryEntries();
+        addEntries(fMenu);
         return fMenu;
     }
 
@@ -93,28 +80,41 @@ class HistoryDropDownAction extends Action implements IMenuCreator {
         }
     }
 
-    protected void addActionToMenu(Menu parent, Action action) {
+    protected void addActionsToMenu(Menu parent, Action action) {
         ActionContributionItem item = new ActionContributionItem(action);
         item.fill(parent, -1);
     }
 
-    private boolean addEntries(Menu menu, IMember[][] elements) {
+    private boolean addEntries(Menu menu) {
         boolean checked = false;
 
-        int min = Math.min(elements.length, RESULTS_IN_DROP_DOWN);
+        FiltersAction action = new FiltersAction(fView, CallHierarchyCore.PREF_SHOW_ALL_CODE);
+        addActionsToMenu(menu, action);
+        action.setChecked(CallHierarchy.getDefault().isShowAll());
 
-        for (int i = 0; i < min; i++) {
-            HistoryAction action = new HistoryAction(fView, elements[i]);
-            action.setChecked(Arrays.equals(elements[i], fView.getInputElements()));
-            checked = checked || action.isChecked();
-            addActionToMenu(menu, action);
-        }
+        FiltersAction actionTwo = new FiltersAction(fView, CallHierarchyCore.PREF_HIDE_TEST_CODE);
+        addActionsToMenu(menu, actionTwo);
+        actionTwo.setChecked(CallHierarchy.getDefault().isHideTestCode());
+
+
+        FiltersAction actionThree = new FiltersAction(fView, CallHierarchyCore.PREF_SHOW_TEST_CODE_ONLY);
+        addActionsToMenu(menu, actionThree);
+        actionThree.setChecked(CallHierarchy.getDefault().isShowTestCode());
+
+
 
         return checked;
     }
 
     @Override
 	public void run() {
-        new HistoryListAction(fView).run();
+    	openFiltersDialog();
+    }
+
+    private void openFiltersDialog() {
+    	FiltersDialog dialog = new FiltersDialog(fView.getViewSite().getShell());
+    	if (Window.OK == dialog.open()) {
+			fView.refresh();
+		}
     }
 }
