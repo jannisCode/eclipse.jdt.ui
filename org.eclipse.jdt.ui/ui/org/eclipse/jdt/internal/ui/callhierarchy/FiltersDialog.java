@@ -44,9 +44,11 @@ class FiltersDialog extends StatusDialog {
     private Button fShowAll;
     private Button fHideTest;
     private Button fShowTest;
-    private Button[] buttons = {fShowAll, fHideTest, fShowTest};
+    private Button[] buttons = {fShowAll, fHideTest, fShowTest}; //important what comes when
+
     protected FiltersDialog(Shell parentShell) {
         super(parentShell);
+
     }
 
     @Override
@@ -119,32 +121,47 @@ class FiltersDialog extends StatusDialog {
 		layout.numColumns= 1;
 		radioGroup.setLayout(layout);
 
-		for (Button button : buttons) {
-			button = new Button(radioGroup, SWT.RADIO);
+		//PREF_FIlters[i][1] is always the text
+
+//		for (int i = 0; i < buttons.length; i++) {
+//			buttons[i] = new Button(radioGroup, SWT.RADIO);
+////			buttons[i].setText(CallHierarchyCore.PREF_FILTERS[i][1]);
+//			buttons[i].setText(getStrings(buttons[i])[1]);
+//		}
+
+		for (int i = 0; i < buttons.length; i++) {
+			buttons[i] = new Button(radioGroup, SWT.RADIO);
+			buttons[i].setText(getStrings(buttons[i])[1]);
 		}
 
-		fShowAll= new Button(radioGroup, SWT.RADIO);
-		fShowAll.setText(CallHierarchyMessages.FiltersDialog_ShowAllCode);
-
-		fHideTest= new Button(radioGroup, SWT.RADIO);
-		fHideTest.setText(CallHierarchyMessages.FiltersDialog_HideTestCode);
-
-		fShowTest= new Button(radioGroup, SWT.RADIO);
-		fShowTest.setText(CallHierarchyMessages.FiltersDialog_TestCodeOnly);
+//		fShowAll= new Button(radioGroup, SWT.RADIO);
+//		fShowAll.setText(CallHierarchyMessages.FiltersDialog_ShowAllCode);
+//
+//		fHideTest= new Button(radioGroup, SWT.RADIO);
+//		fHideTest.setText(CallHierarchyMessages.FiltersDialog_HideTestCode);
+//
+//		fShowTest= new Button(radioGroup, SWT.RADIO);
+//		fShowTest.setText(CallHierarchyMessages.FiltersDialog_TestCodeOnly);
 		setSelection();
 
 		GridData gridData= new GridData();
 		gridData.horizontalIndent= 0;
-		fShowAll.setLayoutData(gridData);
-		fHideTest.setLayoutData(gridData);
-		fShowTest.setLayoutData(gridData);
+
+		for (Button button : buttons) {
+			button.setLayoutData(gridData);
+		}
 	}
 
     private void setSelection() {
-		fShowAll.setSelection(CallHierarchy.getDefault().isShowAll());
-		fHideTest.setSelection(CallHierarchy.getDefault().isHideTestCode());
-		fShowTest.setSelection(CallHierarchy.getDefault().isShowTestCode());
+//		fShowAll.setSelection(CallHierarchy.getDefault().isShowAll());
+//		fHideTest.setSelection(CallHierarchy.getDefault().isHideTestCode());
+//		fShowTest.setSelection(CallHierarchy.getDefault().isShowTestCode());
 
+		for(int i = 0; i < buttons.length; i++) {
+			buttons[i].setSelection(CallHierarchy.getDefault().getActiveFilter()
+					== CallHierarchyCore.PREF_FILTERS[i][0]);
+
+		}
     }
 
     /**
@@ -199,13 +216,12 @@ class FiltersDialog extends StatusDialog {
 //		CallHierarchy.getDefault().setShowAll(fShowAll.getSelection());
 //		CallHierarchy.getDefault().setHideTestCode(fHideTest.getSelection());
 //		CallHierarchy.getDefault().setShowTestCode(fShowTest.getSelection());
-		String activeFilter;
+		String activeFilter =""; //$NON-NLS-1$
 		for (Button button : buttons) {
 			if(button.getSelection()) {
-				activeFilter = getString(button);
+				activeFilter = (getStrings(button))[0];
 			}
 		}
-		activeFilter = ""; //$NON-NLS-1$
 
 		CallHierarchy.getDefault().setActiveFilter(activeFilter);
 	}
@@ -222,13 +238,14 @@ class FiltersDialog extends StatusDialog {
 
 		updateEnabledState();
 	}
-	private String getString(Button B) {
-		if(B == fShowAll) {
-			return CallHierarchyCore.PREF_SHOW_ALL_CODE;
-		} else if (B == fHideTest) {
-			return CallHierarchyCore.PREF_HIDE_TEST_CODE;
+
+	private String[] getStrings(Button B) {
+		if(B == buttons[0]) {
+			return CallHierarchyCore.PREF_FILTERS[0];
+		} else if (B == buttons[1]) {
+			return CallHierarchyCore.PREF_FILTERS[1];
 		} else {
-			return CallHierarchyCore.PREF_SHOW_TEST_CODE_ONLY;
+			return CallHierarchyCore.PREF_FILTERS[2];
 		}
 	}
 
