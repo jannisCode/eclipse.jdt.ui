@@ -46,7 +46,7 @@ import org.eclipse.jdt.internal.ui.util.StringMatcher;
 
 public class CallHierarchyCore {
 
-	//to add a new one just add here
+	//to add a new one just add here and in filters Dialog a new button (and the getStrings method)
 
 	public static final String PREF_SHOW_ALL_CODE = "PREF_SHOW_ALL_CODE";	//$NON-NLS-1$
 	public static final String[] A_SHOW_ALL_CODE = {PREF_SHOW_ALL_CODE, "Show All Code"}; //$NON-NLS-1$
@@ -57,7 +57,13 @@ public class CallHierarchyCore {
 	public static final String PREF_SHOW_TEST_CODE_ONLY = "PREF_SHOW_TEST_CODE_ONLY";	//$NON-NLS-1$
 	public static final String[] A_SHOW_TEST_CODE = {PREF_SHOW_TEST_CODE_ONLY, "Test Code only"}; //$NON-NLS-1$
 
-	public static final String[][] PREF_FILTERS = {A_SHOW_ALL_CODE, A_HIDE_TEST_CODE, A_SHOW_TEST_CODE};
+	public static final String PREF_SHOW_NOTHING = "PREF_SHOW_NOTHING"; //$NON-NLS-1$
+	public static final String[] A_SHOW_NOTHING = {PREF_SHOW_NOTHING, "Show Noting"}; //$NON-NLS-1$
+	public static final String[] DO_SHIT = {"PREF_DO_SHIT", "DO_SHIT"}; //$NON-NLS-1$ //$NON-NLS-2$
+
+
+
+	public static final String[][] PREF_FILTERS = {A_SHOW_ALL_CODE, A_HIDE_TEST_CODE, A_SHOW_TEST_CODE, A_SHOW_NOTHING, DO_SHIT};
 
     public static final String PREF_USE_IMPLEMENTORS= "PREF_USE_IMPLEMENTORS"; //$NON-NLS-1$
     public static final String PREF_USE_FILTERS= "PREF_USE_FILTERS"; //$NON-NLS-1$

@@ -41,10 +41,11 @@ class FiltersDialog extends StatusDialog {
     private Button fFilterOnNames;
     private Text fNames;
     private Text fMaxCallDepth;
-    private Button fShowAll;
-    private Button fHideTest;
-    private Button fShowTest;
-    private Button[] buttons = {fShowAll, fHideTest, fShowTest}; //important what comes when
+//    private Button fShowAll;
+//    private Button fHideTest;
+//    private Button fShowTest;
+//    private Button fShowNothing;
+    private Button[] buttons = new Button[CallHierarchyCore.PREF_FILTERS.length]; //important what comes when
 
     protected FiltersDialog(Shell parentShell) {
         super(parentShell);
@@ -117,6 +118,8 @@ class FiltersDialog extends StatusDialog {
 
     private void createTestCodeArea(Composite parent) {
 		Composite radioGroup= new Composite(parent, SWT.NONE);
+
+
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 1;
 		radioGroup.setLayout(layout);
@@ -143,13 +146,18 @@ class FiltersDialog extends StatusDialog {
 //		fShowTest= new Button(radioGroup, SWT.RADIO);
 //		fShowTest.setText(CallHierarchyMessages.FiltersDialog_TestCodeOnly);
 		setSelection();
-
 		GridData gridData= new GridData();
 		gridData.horizontalIndent= 0;
 
+//		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+
 		for (Button button : buttons) {
-			button.setLayoutData(gridData);
+		    button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		}
+//
+//		for (Button button : buttons) {
+//			button.setLayoutData(gridData);
+//		}
 	}
 
     private void setSelection() {
@@ -216,6 +224,7 @@ class FiltersDialog extends StatusDialog {
 //		CallHierarchy.getDefault().setShowAll(fShowAll.getSelection());
 //		CallHierarchy.getDefault().setHideTestCode(fHideTest.getSelection());
 //		CallHierarchy.getDefault().setShowTestCode(fShowTest.getSelection());
+
 		String activeFilter =""; //$NON-NLS-1$
 		for (Button button : buttons) {
 			if(button.getSelection()) {
@@ -240,13 +249,22 @@ class FiltersDialog extends StatusDialog {
 	}
 
 	private String[] getStrings(Button B) {
-		if(B == buttons[0]) {
-			return CallHierarchyCore.PREF_FILTERS[0];
-		} else if (B == buttons[1]) {
-			return CallHierarchyCore.PREF_FILTERS[1];
-		} else {
-			return CallHierarchyCore.PREF_FILTERS[2];
+		for(int i = 0; i < buttons.length; i++) {
+			if(B == buttons[i]) {
+				return CallHierarchyCore.PREF_FILTERS[i];
+			}
 		}
+		return null;
+//
+//		if(B == buttons[0]) {
+//			return CallHierarchyCore.PREF_FILTERS[0];
+//		} else if (B == buttons[1]) {
+//			return CallHierarchyCore.PREF_FILTERS[1];
+//		} else if (B == buttons[2]){
+//			return CallHierarchyCore.PREF_FILTERS[2];
+//		} else {
+//			return CallHierarchy
+//		}
 	}
 
 
