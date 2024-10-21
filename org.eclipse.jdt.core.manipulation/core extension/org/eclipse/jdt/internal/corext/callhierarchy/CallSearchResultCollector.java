@@ -80,6 +80,7 @@ class CallSearchResultCollector {
 		}
 		IClasspathEntry classpathEntry= determineClassPathEntry(enclosingElement);
 
+
 		if (classpathEntry != null) {
 			boolean isTest= classpathEntry.isTest();
 			return CallHierarchyCore.getDefault().isHideTestCode() && isTest
